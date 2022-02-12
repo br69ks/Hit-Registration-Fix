@@ -3,6 +3,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public Plugin myinfo = 
+{
+	name = "Lag Compensation Fix",
+	author = "brooks, D34DSpy, xutaxkamay",
+	version = "6.9",
+};
+
 DynamicHook g_WantsLagCompensationOnEntity;
 int distance_sqr_old;
 Address distance_sqr;
@@ -12,14 +19,9 @@ ConVar mp_teammates_are_enemies;
 ConVar mp_friendlyfire;
 ConVar sv_lagcompensation_teleport_dist;
 EngineVersion g_Engine;
-ConVar sv_maxunlag;
 
 public void OnPluginStart()
 {
-	sv_maxunlag = FindConVar("sv_maxunlag");
-	sv_maxunlag.AddChangeHook(OnConVarChanged);
-	sv_maxunlag.SetFloat(1.0);
-
 	GameData data = new GameData("LagComp.games");
 	
 	if (!data)
@@ -80,12 +82,6 @@ public void OnPluginEnd()
 	
 	if (max_ms != Address_Null)
 		StoreToAddress(max_ms, max_ms_old, NumberType_Int32);
-}
-
-public void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
-{
-	if (sv_maxunlag.FloatValue != 1.0)
-		sv_maxunlag.SetFloat(1.0);
 }
 
 public void OnClientPutInServer(int client) 

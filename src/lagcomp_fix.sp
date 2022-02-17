@@ -94,7 +94,7 @@ public MRESReturn WantsLagCompensationOnEntity(int client, DHookReturn hReturn, 
 {
 	int entity = hParams.Get(1);
 
-	if (IsValidClient(client) && IsValidClient(entity))
+	if (IsValidClient(client) && IsPlayerAlive(client) && IsValidClient(entity) && IsPlayerAlive(entity))
 	{
 		if ((g_Engine != Engine_CSGO) || !mp_teammates_are_enemies.BoolValue)
 		{

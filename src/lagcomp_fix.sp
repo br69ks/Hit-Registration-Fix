@@ -108,7 +108,7 @@ public MRESReturn WantsLagCompensationOnEntity(int client, DHookReturn hReturn, 
 		if (IsAbleToSee(entity, client))
 		{
 			hReturn.Value = true;
-			return MRES_Supercede;
+			return MRES_Override;
 		}
 	}
 	return MRES_Ignored;

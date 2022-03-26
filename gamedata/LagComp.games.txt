@@ -8,9 +8,10 @@
 			{
 				"library"	"server"
 				"linux"		"361"
-				"windows"	"360"
+				// "windows"	"360" broken apparently
 			}
-		}	
+		}
+
 		"Addresses"
 		{
 			"DistanceSqr"
@@ -27,20 +28,6 @@
 					"read"		"2"
 				}
 			}
-			"max_ms"
-			{
-				"library"	"server"
-				"linux"
-				{
-					"signature"	"max_ms"
-					"read"		"4"
-				}
-				"windows"
-				{
-					"signature"	"max_ms"
-					"read"		"3"
-				}
-			}
 		}
 
 		"Signatures"
@@ -50,12 +37,6 @@
 				"library"	"server"
 				"linux" 	"\x0F\x2F\x05\x2A\x2A\x2A\x2A\x0F\x87\x2A\x2A\x2A\x2A\x0F\x2F\x73\x34"
 				"windows"	"\x0F\x2F\xD4\x77\x2A\xF3\x0F\x10\x44\x24\x10"
-			}
-			"max_ms"
-			{
-				"libary"	 "server"
-				"linux"		"\x66\x0F\x2F\x0D\x2A\x2A\x2A\x2A\x76\x2A\xF3\x0F\x5C\xD0"
-				"windows"	"\x0F\x2F\x0D\x2A\x2A\x2A\x2A\x76\x2A\x0F\x28\xC4"
 			}
 		}
 	}
@@ -68,32 +49,6 @@
 				"library"	"server"
 				"linux"		"324"
 				"windows"	"323"
-			}
-		}
-		"Addresses"
-		{
-			"max_ms"
-			{
-				"library"	"server"
-				"linux"
-				{
-					"signature"	"max_ms"
-					"read"	"4"
-				}
-				"windows"
-				{
-					"signature"	"max_ms"
-					"read"	"3"
-				}
-			}
-		}
-		"Signatures"
-		{
-			"max_ms"
-			{
-				"libary"	 "server"
-				"linux"		"\x66\x0F\x2F\x15\x2A\x2A\x2A\x2A\x76\x2A\xF3\x0F\x5E\xC1"
-				"windows"	"\x0F\x2F\x0D\x2A\x2A\x2A\x2A\x76\x2A\xF3\x0F\x59\xD3"
 			}
 		}
 	}

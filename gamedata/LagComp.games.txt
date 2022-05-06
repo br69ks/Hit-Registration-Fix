@@ -8,7 +8,7 @@
 			{
 				"library"	"server"
 				"linux"		"361"
-				"windows"	"360"
+				"windows"	"359"
 			}
 		}	
 		"Addresses"

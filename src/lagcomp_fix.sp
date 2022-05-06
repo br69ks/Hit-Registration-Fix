@@ -5,20 +5,19 @@
 
 public Plugin myinfo = 
 {
-	name = "Lag Compensation Fix",
-	author = "brooks, D34DSpy, xutaxkamay",
-	version = "6.9",
+	name 	= "Lag Compensation Fix",
+	author 	= "brooks, D34DSpy, xutaxkamay",
+	version = "6.9"
 };
 
+#define DEBUG
+
 DynamicHook g_WantsLagCompensationOnEntity;
-int distance_sqr_old;
 Address distance_sqr;
-int max_ms_old;
-Address max_ms;
 ConVar mp_teammates_are_enemies;
 ConVar mp_friendlyfire;
 ConVar sv_lagcompensation_teleport_dist;
-EngineVersion g_Engine;
+int distance_sqr_old;
 
 public void OnPluginStart()
 {
@@ -27,49 +26,41 @@ public void OnPluginStart()
 	if (!data)
 		SetFailState("Failed to load LagComp.games.txt!");
 	
-	g_Engine = GetEngineVersion();
 	int offset = data.GetOffset("WantsLagComp");
-		
 	distance_sqr = data.GetAddress("DistanceSqr");
-	max_ms = data.GetAddress("max_ms");
 	delete data;
 	
 	sv_lagcompensation_teleport_dist = FindConVar("sv_lagcompensation_teleport_dist");
 	if (sv_lagcompensation_teleport_dist != null)
 		sv_lagcompensation_teleport_dist.SetInt(0x7F7FFFFF);
 
-	if (g_Engine == Engine_CSGO)
-	{	
-		if (distance_sqr != Address_Null)
+	if (distance_sqr != Address_Null)
+	{
+		if ((distance_sqr_old = LoadFromAddress(distance_sqr, NumberType_Int32)))
 		{
-			distance_sqr_old = LoadFromAddress(distance_sqr, NumberType_Int32);
 			StoreToAddress(distance_sqr, 0x7F7FFFFF, NumberType_Int32);
+#if defined DEBUG
+			LogMessage("[Lag Compensation Fix] Patched LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR");
+#endif
 		}
 		else
-			LogError("Could not find signature for \"LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR\"");
+			LogError("Signature for LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR needs to be updated.");
 	}
-	
-	if (max_ms != Address_Null)
-	{
-		max_ms_old = LoadFromAddress(max_ms, NumberType_Int32);
-		StoreToAddress(max_ms, 0x7F7FFFFF, NumberType_Int32);
-	}
-	else
-		LogError("Could not find signature for \"fabs( deltaTime ) > 0.2f\"");
 
-	if (offset == -1)
+	if (offset != -1)
 	{
-		LogError("Could not find offset for WantsLagCompensationOnEntity");
-		return;
+		g_WantsLagCompensationOnEntity = new DynamicHook(offset, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity);
+		g_WantsLagCompensationOnEntity.AddParam(HookParamType_CBaseEntity);
+#if defined DEBUG
+		LogMessage("[Lag Compensation Fix] Patched WantsLagCompensationOnEntity");
+#endif
 	}
-	
-	g_WantsLagCompensationOnEntity = new DynamicHook(offset, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity);
-	g_WantsLagCompensationOnEntity.AddParam(HookParamType_CBaseEntity);
-	
-	if (g_Engine == Engine_CSGO)
-		mp_teammates_are_enemies = FindConVar("mp_teammates_are_enemies");
-		
+	mp_teammates_are_enemies = FindConVar("mp_teammates_are_enemies");
 	mp_friendlyfire = FindConVar("mp_friendlyfire");
+
+#if defined DEBUG
+	RegServerCmd("sm_checkpatches", Command_CheckPatches);
+#endif
 	
 	for (int i = 1; i <= MaxClients; i++)
 		OnClientPutInServer(i);
@@ -77,11 +68,8 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-	if (g_Engine == Engine_CSGO && distance_sqr != Address_Null)
+	if (distance_sqr != Address_Null)
 		StoreToAddress(distance_sqr, distance_sqr_old, NumberType_Int32);
-	
-	if (max_ms != Address_Null)
-		StoreToAddress(max_ms, max_ms_old, NumberType_Int32);
 }
 
 public void OnClientPutInServer(int client) 
@@ -96,7 +84,7 @@ public MRESReturn WantsLagCompensationOnEntity(int client, DHookReturn hReturn, 
 
 	if (IsValidClient(client) && IsPlayerAlive(client) && IsValidClient(entity) && IsPlayerAlive(entity))
 	{
-		if ((g_Engine != Engine_CSGO) || !mp_teammates_are_enemies.BoolValue)
+		if (mp_teammates_are_enemies == null || !mp_teammates_are_enemies.BoolValue)
 		{
 			if (!mp_friendlyfire.BoolValue)
 			{
@@ -109,6 +97,12 @@ public MRESReturn WantsLagCompensationOnEntity(int client, DHookReturn hReturn, 
 		return MRES_Override;
 	}
 	return MRES_Ignored;
+}
+
+public Action Command_CheckPatches(int args)
+{
+	PrintToServer("LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR: %s", (LoadFromAddress(distance_sqr, NumberType_Int32) == 0x7F7FFFFF) ? "Patched" : "Not Patched");
+	PrintToServer("WantsLagCompensationOnEntity: %s", (g_WantsLagCompensationOnEntity != null) ? "Patched" : "Not Patched");
 }
 
 stock bool IsValidClient(int client)

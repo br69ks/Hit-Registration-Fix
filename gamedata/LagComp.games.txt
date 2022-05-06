@@ -33,12 +33,12 @@
 				"linux"
 				{
 					"signature"	"max_ms"
-					"read"		"4"
+					"read"		"8"
 				}
 				"windows"
 				{
 					"signature"	"max_ms"
-					"read"		"3"
+					"read"		"7"
 				}
 			}
 		}

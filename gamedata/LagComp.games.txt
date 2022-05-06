@@ -8,7 +8,7 @@
 			{
 				"library"	"server"
 				"linux"		"361"
-				"windows"	"360"
+				"windows"	"359"
 			}
 		}	
 		"Addresses"
@@ -33,12 +33,12 @@
 				"linux"
 				{
 					"signature"	"max_ms"
-					"read"		"4"
+					"read"		"8"
 				}
 				"windows"
 				{
 					"signature"	"max_ms"
-					"read"		"3"
+					"read"		"7"
 				}
 			}
 		}

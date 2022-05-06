@@ -15,8 +15,6 @@ int distance_sqr_old;
 Address distance_sqr;
 int max_ms_old;
 Address max_ms;
-ConVar mp_teammates_are_enemies;
-ConVar mp_friendlyfire;
 ConVar sv_lagcompensation_teleport_dist;
 EngineVersion g_Engine;
 
@@ -64,12 +62,6 @@ public void OnPluginStart()
 	}
 	
 	g_WantsLagCompensationOnEntity = new DynamicHook(offset, HookType_Entity, ReturnType_Bool, ThisPointer_CBaseEntity);
-	g_WantsLagCompensationOnEntity.AddParam(HookParamType_CBaseEntity);
-	
-	if (g_Engine == Engine_CSGO)
-		mp_teammates_are_enemies = FindConVar("mp_teammates_are_enemies");
-		
-	mp_friendlyfire = FindConVar("mp_friendlyfire");
 	
 	for (int i = 1; i <= MaxClients; i++)
 		OnClientPutInServer(i);
@@ -90,25 +82,10 @@ public void OnClientPutInServer(int client)
 		g_WantsLagCompensationOnEntity.HookEntity(Hook_Post, client, WantsLagCompensationOnEntity);
 }
 
-public MRESReturn WantsLagCompensationOnEntity(int client, DHookReturn hReturn, DHookParam hParams)
+public MRESReturn WantsLagCompensationOnEntity(int client, DHookReturn hReturn)
 {
-	int entity = hParams.Get(1);
-
-	if (IsValidClient(client) && IsPlayerAlive(client) && IsValidClient(entity) && IsPlayerAlive(entity))
-	{
-		if ((g_Engine != Engine_CSGO) || !mp_teammates_are_enemies.BoolValue)
-		{
-			if (!mp_friendlyfire.BoolValue)
-			{
-				if (GetClientTeam(client) == GetClientTeam(entity))
-					return MRES_Ignored;
-			}
-		}
-		
-		hReturn.Value = true;
-		return MRES_Override;
-	}
-	return MRES_Ignored;
+	hReturn.Value = true;
+	return MRES_Supercede;
 }
 
 stock bool IsValidClient(int client)

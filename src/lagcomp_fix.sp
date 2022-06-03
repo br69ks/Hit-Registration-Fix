@@ -13,8 +13,8 @@ public Plugin myinfo =
 DynamicHook g_WantsLagCompensationOnEntity;
 int distance_sqr_old;
 Address distance_sqr;
-int max_ms_old;
-Address max_ms;
+// int max_ms_old;
+// Address max_ms;
 ConVar sv_lagcompensation_teleport_dist;
 EngineVersion g_Engine;
 
@@ -29,7 +29,7 @@ public void OnPluginStart()
 	int offset = data.GetOffset("WantsLagComp");
 		
 	distance_sqr = data.GetAddress("DistanceSqr");
-	max_ms = data.GetAddress("max_ms");
+	// max_ms = data.GetAddress("max_ms");
 	delete data;
 	
 	sv_lagcompensation_teleport_dist = FindConVar("sv_lagcompensation_teleport_dist");
@@ -46,7 +46,7 @@ public void OnPluginStart()
 		else
 			LogError("Could not find signature for \"LAG_COMPENSATION_TELEPORTED_DISTANCE_SQR\"");
 	}
-	
+	/*
 	if (max_ms != Address_Null)
 	{
 		max_ms_old = LoadFromAddress(max_ms, NumberType_Int32);
@@ -54,7 +54,7 @@ public void OnPluginStart()
 	}
 	else
 		LogError("Could not find signature for \"fabs( deltaTime ) > 0.2f\"");
-
+	*/
 	if (offset == -1)
 	{
 		LogError("Could not find offset for WantsLagCompensationOnEntity");
@@ -71,9 +71,10 @@ public void OnPluginEnd()
 {
 	if (g_Engine == Engine_CSGO && distance_sqr != Address_Null)
 		StoreToAddress(distance_sqr, distance_sqr_old, NumberType_Int32);
-	
+	/*
 	if (max_ms != Address_Null)
 		StoreToAddress(max_ms, max_ms_old, NumberType_Int32);
+	*/
 }
 
 public void OnClientPutInServer(int client) 
